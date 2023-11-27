@@ -92,23 +92,21 @@ const Home = () => {
     const newWords = words;
 
     //Analyze the current word by comparing it to the answer and modify the status of every letter
+    newWords[lastWordIndex].forEach((singleLetterOfNewWords, letterIndex) => {
+      if (
+        answerWord?.[0].slowo?.split("").includes(singleLetterOfNewWords.letter)
+      ) {
+        newWords[lastWordIndex][letterIndex] = {
+          letter: newWords[lastWordIndex][letterIndex].letter,
+          status: Status.IN_THE_WRONG_PLACE,
+        };
+      }
+    });
+
     answerWord?.[0].slowo
       .toUpperCase()
       .split("")
       .forEach((letterOfSplitWord, index) => {
-        newWords[lastWordIndex].forEach(
-          (singleLetterOfNewWords, letterIndex) => {
-            if (
-              letterOfSplitWord === singleLetterOfNewWords.letter.toUpperCase()
-            ) {
-              newWords[lastWordIndex][letterIndex] = {
-                letter: newWords[lastWordIndex][letterIndex].letter,
-                status: Status.IN_THE_WRONG_PLACE,
-              };
-            }
-          }
-        );
-
         if (
           letterOfSplitWord ===
           newWords[lastWordIndex][index].letter.toUpperCase()
