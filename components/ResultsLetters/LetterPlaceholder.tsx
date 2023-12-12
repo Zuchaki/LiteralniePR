@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 
-export enum ComparingStatus {
-  FOUND,
-  IN_WRONG_PLACE,
-  MISS,
-}
+import {
+  ComparingStatus,
+  getComparisonStatusLetterPlaceholder,
+} from '@/utils/getComparisonStatus';
+
 type Props = {
   word?: string;
   letterIndex: number;
@@ -23,37 +23,14 @@ const LetterPlaceholder: React.FC<Props> = ({
     ? word.split('').find((_, index) => index === letterIndex) ?? ''
     : '';
 
-  const getComparisonStatus = () => {
-    if (!letterAtIndex || !isComparable) return;
-    const letterAtIndexOccurrencesInTargetWordToCompare = targetWordToCompare
-      .split('')
-      .filter((e) => e === letterAtIndex);
-    const letterAtIndexOccurrencesInWord = word
-      ?.split('')
-      .slice(0, letterIndex + 1)
-      .filter((e) => e === letterAtIndex);
-    const occurrencesMatchingLettersLength =
-      word
-        ?.split('')
-        ?.filter(
-          (wordLetter, index) =>
-            wordLetter === targetWordToCompare[index] &&
-            wordLetter === letterAtIndex,
-        ).length ?? 0;
-
-    const isInWrongPlace =
-      letterAtIndexOccurrencesInWord &&
-      letterAtIndexOccurrencesInTargetWordToCompare.length -
-        occurrencesMatchingLettersLength >=
-        letterAtIndexOccurrencesInWord.length &&
-      occurrencesMatchingLettersLength <
-        letterAtIndexOccurrencesInTargetWordToCompare.length;
-    const isFound = word?.[letterIndex] === targetWordToCompare[letterIndex];
-
-    if (isFound) return ComparingStatus.FOUND;
-    if (isInWrongPlace) return ComparingStatus.IN_WRONG_PLACE;
-    return ComparingStatus.MISS;
-  };
+  const comparisonStatus = isComparable
+    ? getComparisonStatusLetterPlaceholder(
+        letterIndex,
+        targetWordToCompare,
+        word,
+        letterAtIndex,
+      )
+    : null;
 
   return (
     <div
@@ -62,11 +39,11 @@ const LetterPlaceholder: React.FC<Props> = ({
         className,
         {
           'bg-error !text-white border-none':
-            getComparisonStatus() === ComparingStatus.MISS,
+            comparisonStatus === ComparingStatus.MISS,
           'bg-warning !text-white border-none':
-            getComparisonStatus() === ComparingStatus.IN_WRONG_PLACE,
+            comparisonStatus === ComparingStatus.IN_WRONG_PLACE,
           'bg-success !text-white border-none':
-            getComparisonStatus() === ComparingStatus.FOUND,
+            comparisonStatus === ComparingStatus.FOUND,
         },
       )}
     >

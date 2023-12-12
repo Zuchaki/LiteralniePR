@@ -3,8 +3,12 @@ import classNames from 'classnames';
 import type { ComponentProps } from 'react';
 import React from 'react';
 
+import {
+  ComparingStatus,
+  getComparisonStatusKeyboardButton,
+} from '@/utils/getComparisonStatus';
+
 import Button from '../Button';
-import { ComparingStatus } from '../ResultsLetters/LetterPlaceholder';
 
 type Props = {
   keyValue: string;
@@ -25,48 +29,25 @@ const KeyButton: React.FC<Props> = ({
   isHiddenOnKeyValue = false,
   ...props
 }) => {
-  const getComparisonStatus = () => {
-    if (!previousWordsAttempt || !targetWord) return;
-    const isFound = previousWordsAttempt.some((wordToCompare) =>
-      wordToCompare
-        .toLocaleLowerCase()
-        .split('')
-        .some(
-          (letterToCompare, index) =>
-            letterToCompare === targetWord[index] &&
-            letterToCompare === keyValue,
-        ),
-    );
-    const isInWrongPlace = previousWordsAttempt.some(
-      (wordToCompare) =>
-        wordToCompare.toLocaleLowerCase().includes(keyValue) &&
-        targetWord.includes(keyValue),
-    );
-    const isMiss = previousWordsAttempt.some(
-      (wordToCompare) =>
-        wordToCompare.toLocaleLowerCase().includes(keyValue) &&
-        !targetWord.includes(keyValue),
-    );
+  const comparisonStatus = getComparisonStatusKeyboardButton(
+    keyValue,
+    previousWordsAttempt,
+    targetWord,
+  );
 
-    if (isFound) return ComparingStatus.FOUND;
-    if (isInWrongPlace) return ComparingStatus.IN_WRONG_PLACE;
-    if (isMiss) return ComparingStatus.MISS;
-  };
   return (
     <Button
       {...props}
       size={props.size ?? 'keyboardKey'}
       type="button"
       prefixIcon={icon}
-      tabIndex={-1}
       onBlur={() => {}}
       onClick={onClick}
       className={classNames(className, {
-        '!bg-error text-white': getComparisonStatus() === ComparingStatus.MISS,
+        '!bg-error text-white': comparisonStatus === ComparingStatus.MISS,
         '!bg-warning text-white':
-          getComparisonStatus() === ComparingStatus.IN_WRONG_PLACE,
-        '!bg-success text-white':
-          getComparisonStatus() === ComparingStatus.FOUND,
+          comparisonStatus === ComparingStatus.IN_WRONG_PLACE,
+        '!bg-success text-white': comparisonStatus === ComparingStatus.FOUND,
       })}
     >
       {isHiddenOnKeyValue ? null : keyValue.toLocaleUpperCase()}
