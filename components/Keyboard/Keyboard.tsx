@@ -98,7 +98,7 @@ const Keyboard: React.FC<Props> = ({
           size="w-full"
         />
         <KeyButton
-          isHiddenOnKeyValue
+          isHiddenKeyValue
           icon={faBackspace}
           keyValue="Backspace"
           onClick={() => handleKeyPress('Backspace')}

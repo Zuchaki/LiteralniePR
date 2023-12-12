@@ -13,7 +13,7 @@ import Button from '../Button';
 type Props = {
   keyValue: string;
   icon?: IconDefinition;
-  isHiddenOnKeyValue?: boolean;
+  isHiddenKeyValue?: boolean;
   className?: string;
   previousWordsAttempt?: string[];
   targetWord?: string;
@@ -26,7 +26,7 @@ const KeyButton: React.FC<Props> = ({
   onClick,
   previousWordsAttempt,
   targetWord,
-  isHiddenOnKeyValue = false,
+  isHiddenKeyValue = false,
   ...props
 }) => {
   const comparisonStatus = getComparisonStatusKeyboardButton(
@@ -50,7 +50,7 @@ const KeyButton: React.FC<Props> = ({
         '!bg-success text-white': comparisonStatus === ComparingStatus.FOUND,
       })}
     >
-      {isHiddenOnKeyValue ? null : keyValue.toLocaleUpperCase()}
+      {isHiddenKeyValue ? null : keyValue.toLocaleUpperCase()}
     </Button>
   );
 };
